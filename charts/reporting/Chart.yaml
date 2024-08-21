@@ -2,7 +2,7 @@ apiVersion: v2
 name: reporting
 description: A Helm chart for OpenG2P Reporting module.
 type: application
-version: 0.0.0-develop
+version: 1.2.0
 dependencies:
 - name: kafka
   repository: oci://registry-1.docker.io/bitnamicharts
@@ -16,7 +16,7 @@ dependencies:
   version: 2.6.0
   condition: debezium.enabled
 - name: opensearch-kafka-connector
-  version: 0.0.0-develop
+  version: 1.2.0
   condition: opensearch-kafka-connector.enabled
 icon: https://openg2p.github.io/openg2p-helm/openg2p-logo.png
 annotations:

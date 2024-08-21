@@ -2,7 +2,7 @@ apiVersion: v2
 name: opensearch-kafka-connector
 description: OpenSearch Kafka Connector Helm chart
 type: application
-version: 0.0.0-develop
+version: 1.2.0
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts

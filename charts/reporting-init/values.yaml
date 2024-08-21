@@ -31,7 +31,7 @@ backoffLimit: 5
 image:
   registry: docker.io
   repository: openg2p/reporting-init-shell-tools
-  tag: develop
+  tag: 1.2.0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -128,7 +128,7 @@ dashboardsConnectorConfigMap: ""
 gitConfig:
   enabled: true
   repoUrl: https://github.com/openg2p/openg2p-reporting
-  branch: develop
+  branch: v1.2.0
   subDir: ""
   envVars:
     GIT_CONFIG_REPO_URL:

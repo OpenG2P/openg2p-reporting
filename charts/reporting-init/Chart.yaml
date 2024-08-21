@@ -2,7 +2,7 @@ apiVersion: v2
 name: reporting-init
 description: A Helm chart for initializing OpenG2P Reporting connectors.
 type: application
-version: 0.0.0-develop
+version: 1.2.0
 dependencies:
 - name: common
   repository: oci://registry-1.docker.io/bitnamicharts
