@@ -8,6 +8,12 @@ on:
       - 1.*
       - develop
       - main
+  workflow_dispatch:
+    inputs:
+      forcePublishCharts:
+        description: "Force publish Charts?"
+        default: "*"
+        type: string
 
 jobs:
   generate-charts:
@@ -15,6 +21,7 @@ jobs:
     env:
       SKIP: 'FALSE'
       RANCHER_CHART_FILTER: "openg2p.org/add-to-rancher"
+      FORCE_PUBLISH_CHARTS: "${{ inputs.forcePublishCharts || '' }}"
     defaults:
       run:
         shell: bash
@@ -23,20 +30,29 @@ jobs:
       uses: actions/checkout@v3
 
     - id: files
+      if: env.FORCE_PUBLISH_CHARTS == ''
       uses: jitterbit/get-changed-files@v1
 
     - name: save helm/charts to tmp.txt file
       run: |
         touch charts-list.txt
-        for changed_file in ${{ steps.files.outputs.all }}; do
-          if [[ ${changed_file} =~ ^charts ]]; then
-            chart_name=$(echo "${changed_file}" | awk -F/ '/^[charts]/{print $2}')
-            echo $chart_name >> charts-list.txt;
-            echo "Saved $chart_name chart to charts-list.txt"
-          fi
-        done
-        cat charts-list.txt | sort | uniq > charts-list-unique.txt
-        mv charts-list-unique.txt charts-list.txt
+        if [ -n "${FORCE_PUBLISH_CHARTS}" ]; then
+          for chart in charts/${FORCE_PUBLISH_CHARTS}/; do
+            chart="${chart#charts/}"
+            chart="${chart%/}"
+            echo "$chart" >> charts-list.txt
+          done
+        else
+          for changed_file in ${{ steps.files.outputs.all }}; do
+            if [[ ${changed_file} =~ ^charts ]]; then
+              chart_name=$(echo "${changed_file}" | awk -F/ '/^[charts]/{print $2}')
+              echo $chart_name >> charts-list.txt;
+              echo "Saved $chart_name chart to charts-list.txt"
+            fi
+          done
+          cat charts-list.txt | sort | uniq > charts-list-unique.txt
+          mv charts-list-unique.txt charts-list.txt
+        fi
         echo "List of charts to be published";
         cat charts-list.txt
 
@@ -73,7 +89,7 @@ jobs:
           echo "SKIP=TRUE" >> $GITHUB_ENV
         fi
     - name: Upload tar as Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
           name: charts
           path: ./*.tgz
@@ -88,7 +104,7 @@ jobs:
       if: env.SKIP != 'TRUE'
 
     - name: Download tar from Artifacts
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
           name: charts
           path: ./
