@@ -12,6 +12,7 @@ reportingInstallationName: '{{ .Release.Name }}-reporting'
 debeziumInstallationName: '{{ tpl .Values.reportingInstallationName $ }}-debezium'
 osKafkaConnectorInstallationName: '{{ tpl .Values.reportingInstallationName $ }}-os-kafka-connector'
 opensearchInstallationName: '{{ tpl .Values.reportingInstallationName $ }}-opensearch'
+dedupeOpensearchInstallationName: '{{ .Release.Name }}-deduplicator-opensearch'
 postgresqlInstallationName: '{{ .Release.Name }}-postgresql'
 
 ## Add labels to all the deployed resources
@@ -158,9 +159,14 @@ envVars:
   DEFAULT_DEBEZIUM_CONNECTOR_HEARTBEAT_MS: 5000
 
   OPENSEARCH_URL: 'https://{{ tpl .Values.opensearchInstallationName $ }}:9200'
+  OPENSEARCH_DASHBOARDS_URL: 'http://{{ tpl .Values.opensearchInstallationName $ }}-dashboards:5601'
 
   OPENSEARCH_SECURITY_ENABLED: true
   OPENSEARCH_USERNAME: admin
+
+  DEDUPE_OPENSEARCH_URL: 'https://{{ tpl .Values.dedupeOpensearchInstallationName $ }}:9200'
+  DEDUPE_OPENSEARCH_SECURITY_ENABLED: true
+  DEDUPE_OPENSEARCH_USERNAME: admin
 
   dollar: '$'
 
@@ -172,6 +178,10 @@ envVarsFrom:
   OPENSEARCH_PASSWORD:
     secretKeyRef:
       name: '{{ tpl .Values.opensearchInstallationName $ }}'
+      key: opensearch-password
+  DEDUPE_OPENSEARCH_PASSWORD:
+    secretKeyRef:
+      name: '{{ tpl .Values.dedupeOpensearchInstallationName $ }}'
       key: opensearch-password
 
 startUpCommand: |-
@@ -206,7 +216,7 @@ startUpCommand: |-
     echo "==> Starting Debezium Connector Initialization"
     debezium_existing_connectors_list=$(curl -s $DEBEZIUM_URL/connectors | jq -cr '.[]')
     debezium_new_connectors_list=()
-    for debezium_conn in debezium-connectors/* ; do
+    for debezium_conn in debezium-connectors/*.json ; do
       debezium_connector_config=$(envsubst < $debezium_conn | jq -cr '.')
       debezium_connector_name=$(echo $debezium_connector_config | jq -cr '.name')
       debezium_new_connectors_list+=("$debezium_connector_name")
@@ -246,7 +256,7 @@ startUpCommand: |-
     echo "==> Starting Opensearch Connector Initialization"
     os_existing_connectors_list=$(curl -s $OS_KAFKA_CONNECTOR_URL/connectors | jq -cr '.[]')
     os_new_connectors_list=()
-    for os_conn in opensearch-connectors/* ; do
+    for os_conn in opensearch-connectors/*.json ; do
       os_connector_config=$(envsubst < $os_conn | jq -cr '.')
       os_connector_name=$(echo $os_connector_config | jq -cr '.name')
       os_new_connectors_list+=("$os_connector_name")
@@ -282,4 +292,12 @@ startUpCommand: |-
   fi
 
   echo "====> OPENSEARCH DASHBOARDS"
-  ## TODO: Load dashboards also from this script
+  if [ -d opensearch-dashboards ]; then
+    TEMP_DASHBOARD_OBJECT_FILE="/tmp/temp_kib_obj.ndjson"
+
+    for os_dash in opensearch-dashboards/*.ndjson ; do
+      $(envsubst < $os_dash) > $TEMP_DASHBOARD_OBJECT_FILE
+      echo "==> Importing Dashboard - $os_dash."
+      curl -u $OPENSEARCH_USERNAME:$OPENSEARCH_PASSWORD -XPOST "${OPENSEARCH_DASHBOARDS_URL}/api/saved_objects/_import?overwrite=true" -H "osd-xsrf: true" --form file=@$TEMP_OBJ_FILE
+    done
+  fi

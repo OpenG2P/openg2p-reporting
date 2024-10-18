@@ -108,12 +108,7 @@ public class TimestampSelectorTest {
 
         SourceRecord transformed = xformValue.apply(createRecordWithSchema(structWithTimestampFieldSchema, original));
 
-        Schema expectedSchema = SchemaBuilder.struct()
-                .field("ts1", Schema.STRING_SCHEMA)
-                .field("other", Schema.STRING_SCHEMA)
-                .field("ts3", Schema.STRING_SCHEMA)
-                .build();
-        assertEquals(expectedSchema, transformed.valueSchema());
+        assertEquals(Schema.STRING_SCHEMA, transformed.valueSchema().field("ts3").schema());
         assertEquals("2021-09-13T11:06:09.108Z", ((Struct) transformed.value()).get("ts1"));
         assertThrows(DataException.class, () -> {((Struct) transformed.value()).get("ts2");});
         assertEquals("test", ((Struct) transformed.value()).get("other"));

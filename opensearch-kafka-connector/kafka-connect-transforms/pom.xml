@@ -85,6 +85,11 @@
             <artifactId>httpclient5</artifactId>
             <version>5.1</version>
         </dependency>
+        <dependency>
+            <groupId>net.thisptr</groupId>
+            <artifactId>jackson-jq</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -129,6 +134,7 @@
                             <excludes>
                                 <exclude>META-INF/**</exclude>
                                 <exclude>META-INF</exclude>
+                                <exclude>module-info.class</exclude>
                             </excludes>
                         </filter>
                     </filters>

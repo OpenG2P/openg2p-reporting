@@ -1,12 +1,12 @@
 {
-    "name": "g2p_program_membership_${DB_PREFIX_INDEX}",
+    "name": "g2p_id_type_${DB_PREFIX_INDEX}",
     "config": {
         "connector.class": "io.aiven.kafka.connect.opensearch.OpensearchSinkConnector",
         "connection.url": "${OPENSEARCH_URL}",
         "connection.username": "${OPENSEARCH_USERNAME}",
         "connection.password": "${OPENSEARCH_PASSWORD}",
         "tasks.max": "1",
-        "topics": "${DB_PREFIX_INDEX}.public.g2p_program_membership",
+        "topics": "${DB_PREFIX_INDEX}.public.g2p_id_type",
         "key.ignore": "false",
         "schema.ignore": "true",
         "key.converter": "org.apache.kafka.connect.json.JsonConverter",
@@ -18,7 +18,7 @@
         "behavior.on.malformed.documents": "warn",
         "behavior.on.version.conflict": "warn",
 
-        "transforms": "keyExtId,valExt,tsconvert01,tsconvert02,tsconvert03,tsconvert04,join01,join02,tsSelect",
+        "transforms": "keyExtId,valExt,tsconvert01,tsconvert02,tsconvert03,tsSelect",
 
         "transforms.keyExtId.type": "org.apache.kafka.connect.transforms.ExtractField${dollar}Key",
         "transforms.keyExtId.field": "id",
@@ -36,32 +36,6 @@
         "transforms.tsconvert03.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
         "transforms.tsconvert03.field": "write_date",
         "transforms.tsconvert03.input.type": "micro_sec",
-
-        "transforms.tsconvert04.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
-        "transforms.tsconvert04.field": "enrollment_date",
-        "transforms.tsconvert04.input.type": "micro_sec",
-
-        "transforms.join01.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewField${dollar}Value",
-        "transforms.join01.input.fields": "program_id",
-        "transforms.join01.output.fields": "program_name",
-        "transforms.join01.es.index": "${DB_PREFIX_INDEX}.public.g2p_program",
-        "transforms.join01.es.input.fields": "id",
-        "transforms.join01.es.output.fields": "name",
-        "transforms.join01.es.security.enabled": "${OPENSEARCH_SECURITY_ENABLED}",
-        "transforms.join01.es.url": "${OPENSEARCH_URL}",
-        "transforms.join01.es.username": "${OPENSEARCH_USERNAME}",
-        "transforms.join01.es.password": "${OPENSEARCH_PASSWORD}",
-
-        "transforms.join02.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewField${dollar}Value",
-        "transforms.join02.input.fields": "partner_id",
-        "transforms.join02.output.fields": "registrant_create_datetime,gender",
-        "transforms.join02.es.index": "${DB_PREFIX_INDEX}.public.res_partner",
-        "transforms.join02.es.input.fields": "id",
-        "transforms.join02.es.output.fields": "create_date,gender",
-        "transforms.join02.es.security.enabled": "${OPENSEARCH_SECURITY_ENABLED}",
-        "transforms.join02.es.url": "${OPENSEARCH_URL}",
-        "transforms.join02.es.username": "${OPENSEARCH_USERNAME}",
-        "transforms.join02.es.password": "${OPENSEARCH_PASSWORD}",
 
         "transforms.tsSelect.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampSelector${dollar}Value",
         "transforms.tsSelect.ts.order": "write_date,create_date,source_ts_ms",

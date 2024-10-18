@@ -13,7 +13,6 @@
         "database.dbname": "${DB_NAME}",
         "topic.prefix": "${DB_PREFIX_INDEX}",
         "table.include.list": "public.res_partner,public.g2p_program,public.g2p_program_fund,public.g2p_program_membership,public.g2p_program_membership_duplicate,public.g2p_program_registrant_info,public.g2p_program_assessment,public.g2p_entitlement,public.g2p_payment_batch,public.g2p_payment",
-        "column.exclude.list": "",
         "heartbeat.interval.ms": "${DEFAULT_DEBEZIUM_CONNECTOR_HEARTBEAT_MS}",
         "decimal.handling.mode": "double"
     },

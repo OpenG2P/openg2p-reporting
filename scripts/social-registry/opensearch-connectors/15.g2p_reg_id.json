@@ -1,0 +1,75 @@
+{
+    "name": "g2p_reg_id_${DB_PREFIX_INDEX}",
+    "config": {
+        "connector.class": "io.aiven.kafka.connect.opensearch.OpensearchSinkConnector",
+        "connection.url": "${OPENSEARCH_URL}",
+        "connection.username": "${OPENSEARCH_USERNAME}",
+        "connection.password": "${OPENSEARCH_PASSWORD}",
+        "tasks.max": "1",
+        "topics": "${DB_PREFIX_INDEX}.public.g2p_reg_id",
+        "key.ignore": "false",
+        "schema.ignore": "true",
+        "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+        "key.converter.schemas.enable": "true",
+        "value.converter.schemas.enable": "false",
+
+        "behavior.on.null.values": "delete",
+        "behavior.on.malformed.documents": "warn",
+        "behavior.on.version.conflict": "warn",
+
+        "transforms": "keyExtId,valExt,join01,insertBack1,insertBack2,tsconvert01,tsconvert02,tsconvert03,tsSelect",
+
+        "transforms.keyExtId.type": "org.apache.kafka.connect.transforms.ExtractField${dollar}Key",
+        "transforms.keyExtId.field": "id",
+
+        "transforms.valExt.type": "org.openg2p.reporting.kafka.connect.transforms.ApplyJq${dollar}Value",
+        "transforms.valExt.field": ".payload.after + {source_ts_ms: .payload.source.ts_ms}",
+
+        "transforms.join01.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewField${dollar}Value",
+        "transforms.join01.input.fields": "id_type",
+        "transforms.join01.output.fields": "id_type_name",
+        "transforms.join01.es.index": "${DB_PREFIX_INDEX}.public.g2p_id_type",
+        "transforms.join01.es.input.fields": "id",
+        "transforms.join01.es.output.fields": "name",
+        "transforms.join01.es.url": "${OPENSEARCH_URL}",
+        "transforms.join01.es.security.enabled": "${OPENSEARCH_SECURITY_ENABLED}",
+        "transforms.join01.es.username": "${OPENSEARCH_USERNAME}",
+        "transforms.join01.es.password": "${OPENSEARCH_PASSWORD}",
+
+        "transforms.insertBack1.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewFieldInsertBack${dollar}Value",
+        "transforms.insertBack1.id.expr": ".partner_id",
+        "transforms.insertBack1.condition": ".id_type_name == \"NATIONAL ID\"",
+        "transforms.insertBack1.value": "{reg_id_NATIONAL_ID: .value}",
+        "transforms.insertBack1.es.index": "${DB_PREFIX_INDEX}.public.res_partner",
+        "transforms.insertBack1.es.url": "${OPENSEARCH_URL}",
+        "transforms.insertBack1.es.security.enabled": "${OPENSEARCH_SECURITY_ENABLED}",
+        "transforms.insertBack1.es.username": "${OPENSEARCH_USERNAME}",
+        "transforms.insertBack1.es.password": "${OPENSEARCH_PASSWORD}",
+
+        "transforms.insertBack2.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewFieldInsertBack${dollar}Value",
+        "transforms.insertBack2.id.expr": ".partner_id",
+        "transforms.insertBack2.condition": ".id_type_name == \"NATIONAL ID TOKEN\"",
+        "transforms.insertBack2.value": "{reg_id_NATIONAL_ID_TOKEN: .value}",
+        "transforms.insertBack2.es.index": "${DB_PREFIX_INDEX}.public.res_partner",
+        "transforms.insertBack2.es.url": "${OPENSEARCH_URL}",
+        "transforms.insertBack2.es.security.enabled": "${OPENSEARCH_SECURITY_ENABLED}",
+        "transforms.insertBack2.es.username": "${OPENSEARCH_USERNAME}",
+        "transforms.insertBack2.es.password": "${OPENSEARCH_PASSWORD}",
+
+        "transforms.tsconvert01.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
+        "transforms.tsconvert01.field": "source_ts_ms",
+
+        "transforms.tsconvert02.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
+        "transforms.tsconvert02.field": "create_date",
+        "transforms.tsconvert02.input.type": "micro_sec",
+
+        "transforms.tsconvert03.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampConverterAdv${dollar}Value",
+        "transforms.tsconvert03.field": "write_date",
+        "transforms.tsconvert03.input.type": "micro_sec",
+
+        "transforms.tsSelect.type": "org.openg2p.reporting.kafka.connect.transforms.TimestampSelector${dollar}Value",
+        "transforms.tsSelect.ts.order": "write_date,create_date,source_ts_ms",
+        "transforms.tsSelect.output.field": "@timestamp_gen"
+    }
+}
