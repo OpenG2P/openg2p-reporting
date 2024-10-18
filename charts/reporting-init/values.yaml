@@ -298,8 +298,8 @@ startUpCommand: |-
     TEMP_DASHBOARD_OBJECT_FILE="/tmp/temp_kib_obj.ndjson"
 
     for os_dash in opensearch-dashboards/*.ndjson ; do
-      $(envsubst < $os_dash) > $TEMP_DASHBOARD_OBJECT_FILE
+      envsubst < $os_dash > $TEMP_DASHBOARD_OBJECT_FILE
       echo "==> Importing Dashboard - $os_dash."
-      curl -u $OPENSEARCH_USERNAME:$OPENSEARCH_PASSWORD -XPOST "${OPENSEARCH_DASHBOARDS_URL}/api/saved_objects/_import?overwrite=true" -H "osd-xsrf: true" --form file=@$TEMP_OBJ_FILE
+      curl -u $OPENSEARCH_USERNAME:$OPENSEARCH_PASSWORD -XPOST "${OPENSEARCH_DASHBOARDS_URL}/api/saved_objects/_import?overwrite=true" -H "osd-xsrf: true" --form file=@$TEMP_DASHBOARD_OBJECT_FILE
     done
   fi
