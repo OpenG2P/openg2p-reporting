@@ -27,7 +27,7 @@
         "transforms.keyExtId.field": "id",
 
         "transforms.valExt.type": "org.openg2p.reporting.kafka.connect.transforms.ApplyJq${dollar}Value",
-        "transforms.valExt.field": ".payload.after + {source_ts_ms: .payload.source.ts_ms}",
+        "transforms.valExt.expr": ".payload.after + {source_ts_ms: .payload.source.ts_ms}",
 
         "transforms.renameTopic.type": "org.openg2p.reporting.kafka.connect.transforms.RenameTopic",
         "transforms.renameTopic.topic": "res_partner"

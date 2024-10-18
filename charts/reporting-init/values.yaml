@@ -12,6 +12,7 @@ reportingInstallationName: '{{ .Release.Name }}-reporting'
 debeziumInstallationName: '{{ tpl .Values.reportingInstallationName $ }}-debezium'
 osKafkaConnectorInstallationName: '{{ tpl .Values.reportingInstallationName $ }}-os-kafka-connector'
 opensearchInstallationName: '{{ tpl .Values.reportingInstallationName $ }}-opensearch'
+dedupeServiceInstallationName: '{{ .Release.Name }}-deduplicator-openg2p-deduplicator'
 dedupeOpensearchInstallationName: '{{ .Release.Name }}-deduplicator-opensearch'
 postgresqlInstallationName: '{{ .Release.Name }}-postgresql'
 
@@ -164,6 +165,7 @@ envVars:
   OPENSEARCH_SECURITY_ENABLED: true
   OPENSEARCH_USERNAME: admin
 
+  DEDUPE_SERVICE_BASE_URL: 'http://{{ tpl .Values.dedupeServiceInstallationName $ }}'
   DEDUPE_OPENSEARCH_URL: 'https://{{ tpl .Values.dedupeOpensearchInstallationName $ }}:9200'
   DEDUPE_OPENSEARCH_SECURITY_ENABLED: true
   DEDUPE_OPENSEARCH_USERNAME: admin

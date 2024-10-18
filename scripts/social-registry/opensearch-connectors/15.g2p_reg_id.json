@@ -24,7 +24,7 @@
         "transforms.keyExtId.field": "id",
 
         "transforms.valExt.type": "org.openg2p.reporting.kafka.connect.transforms.ApplyJq${dollar}Value",
-        "transforms.valExt.field": ".payload.after + {source_ts_ms: .payload.source.ts_ms}",
+        "transforms.valExt.expr": ".payload.after + {source_ts_ms: .payload.source.ts_ms}",
 
         "transforms.join01.type": "org.openg2p.reporting.kafka.connect.transforms.DynamicNewField${dollar}Value",
         "transforms.join01.input.fields": "id_type",
