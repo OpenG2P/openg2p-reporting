@@ -196,7 +196,11 @@ public abstract class DynamicNewField<R extends ConnectRecord<R>> extends BaseTr
             }
             for(String esOutputField: esOutputFields){
                 if(responseSource != null && responseSource.has(esOutputField)){
-                    outputValues.add(responseSource.get(esOutputField));
+                    if(!responseSource.isNull(esOutputField)){
+                        outputValues.add(responseSource.get(esOutputField));
+                    } else {
+                        outputValues.add(null);
+                    }
                 } else {
                     outputValues.add(outputDefaultValue);
                 }
