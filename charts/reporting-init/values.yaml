@@ -185,6 +185,7 @@ envVarsFrom:
     secretKeyRef:
       name: '{{ tpl .Values.dedupeOpensearchInstallationName $ }}'
       key: opensearch-password
+      optional: true
 
 startUpCommand: |-
   #!/usr/bin/env bash
