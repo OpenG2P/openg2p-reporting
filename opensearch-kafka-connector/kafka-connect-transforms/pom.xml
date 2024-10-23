@@ -4,13 +4,6 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.6.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <licenses>
         <license>
             <name>MPL 2.0</name>
@@ -40,7 +33,10 @@
     <url>https://github.com/openg2p/openg2p-reporting</url>
 
     <properties>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -128,13 +124,21 @@
                 </executions>
                 <configuration>
                     <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>net/thisptr/jackson/jq/jq.json</resource>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                    </transformers>
                     <filters>
                         <filter>
                             <artifact>*:*</artifact>
                             <excludes>
-                                <exclude>META-INF/**</exclude>
-                                <exclude>META-INF</exclude>
-                                <exclude>module-info.class</exclude>
+                                <exclude>META-INF/*LICENSE*</exclude>
+                                <exclude>META-INF/*NOTICE*</exclude>
+                                <exclude>META-INF/*DEPENDENCIES*</exclude>
+                                <exclude>META-INF/*MANIFEST*</exclude>
+                                <exclude>**/module-info.class</exclude>
                             </excludes>
                         </filter>
                     </filters>
