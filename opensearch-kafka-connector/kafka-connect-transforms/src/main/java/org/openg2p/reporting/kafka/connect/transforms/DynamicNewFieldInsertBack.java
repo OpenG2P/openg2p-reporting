@@ -218,8 +218,8 @@ public abstract class DynamicNewFieldInsertBack<R extends ConnectRecord<R>> exte
         .define(ES_SECURITY_ENABLED_CONFIG, ConfigDef.Type.STRING, "", ConfigDef.Importance.HIGH, "Is Elasticsearch security enabled?")
         .define(ES_USERNAME_CONFIG, ConfigDef.Type.STRING, "", ConfigDef.Importance.HIGH, "Elasticsearch Username")
         .define(ES_PASSWORD_CONFIG, ConfigDef.Type.STRING, "", ConfigDef.Importance.HIGH, "Elasticsearch Password")
-        .define(ES_UPSERT_CONFIG, ConfigDef.Type.BOOLEAN, false, ConfigDef.Importance.HIGH, "Elasticsearch Update API doc_as_upsert param.")
-        .define(ES_MAX_RETRIES_CONFIG, ConfigDef.Type.INT, 10, ConfigDef.Importance.HIGH, "Elasticsearch Update API no of retries before fail.")
+        .define(ES_UPSERT_CONFIG, ConfigDef.Type.BOOLEAN, true, ConfigDef.Importance.HIGH, "Elasticsearch Update API doc_as_upsert param.")
+        .define(ES_MAX_RETRIES_CONFIG, ConfigDef.Type.INT, 1, ConfigDef.Importance.HIGH, "Elasticsearch Update API no of retries before fail.")
         .define(ES_RETRY_ON_CONFLICT_CONFIG, ConfigDef.Type.INT, 10, ConfigDef.Importance.HIGH, "Elasticsearch Update API retry_on_conflict param.");
 
 
