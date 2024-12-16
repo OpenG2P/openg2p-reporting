@@ -1,4 +1,4 @@
-FROM alpine:20240606
+FROM alpine:20240923
 
 ARG container_user_id=1001
 ARG container_group_id=1001
