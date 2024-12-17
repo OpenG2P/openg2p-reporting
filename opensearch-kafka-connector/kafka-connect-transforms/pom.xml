@@ -29,7 +29,7 @@
     <groupId>org.openg2p.reporting</groupId>
     <artifactId>kafka-connect-transforms</artifactId>
     <name>OpenG2P Reporting Kafka Connect Transforms</name>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.0</version>
     <url>https://github.com/openg2p/openg2p-reporting</url>
 
     <properties>

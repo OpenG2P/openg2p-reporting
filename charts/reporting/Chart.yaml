@@ -2,13 +2,13 @@ apiVersion: v2
 name: reporting
 description: A Helm chart for OpenG2P Reporting module.
 type: application
-version: 1.3.0-develop
+version: 1.3.0
 dependencies:
 - name: debezium
   version: 2.6.0
   condition: debezium.enabled
 - name: opensearch-kafka-connector
-  version: 1.3.0-develop
+  version: 1.3.0
   condition: opensearch-kafka-connector.enabled
 icon: https://openg2p.github.io/openg2p-helm/openg2p-logo.png
 annotations:
