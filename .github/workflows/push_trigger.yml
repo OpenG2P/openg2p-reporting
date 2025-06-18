@@ -116,7 +116,7 @@ jobs:
         for chartname in $RANCHER_CHARTS; do
           cp ${chartname}*.tgz rancher/
         done
-        helm repo index --merge rancher/index.yaml rancher
+        helm repo index --url ../ --merge rancher/index.yaml rancher
         for chartname in $RANCHER_CHARTS; do
           rm rancher/${chartname}*.tgz || true
         done
